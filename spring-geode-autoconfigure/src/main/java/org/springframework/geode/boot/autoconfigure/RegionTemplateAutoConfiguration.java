@@ -52,6 +52,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.type.StandardMethodMetadata;
 import org.springframework.data.gemfire.GemfireOperations;
 import org.springframework.data.gemfire.GemfireTemplate;
+import org.springframework.data.gemfire.GemfireUtils;
 import org.springframework.data.gemfire.ResolvableRegionFactoryBean;
 import org.springframework.data.gemfire.config.xml.GemfireConstants;
 import org.springframework.data.gemfire.util.ArrayUtils;
@@ -265,12 +266,8 @@ public class RegionTemplateAutoConfiguration extends TypelessAnnotationConfigSup
 	// TODO: Remove this logic when DATAGEODE-231 is resolved!
 	private void handlePrematureCacheCreation(ConfigurableApplicationContext applicationContext) {
 
-		if (applicationContext.containsBean(GemfireConstants.DEFAULT_GEMFIRE_CACHE_NAME)) {
-
-			GemFireCache cache = applicationContext.getBean(GemFireCache.class);
-
-			registerRegionTemplatesForCacheRegions(applicationContext, cache);
-		}
+		Optional.ofNullable(GemfireUtils.resolveGemFireCache())
+			.ifPresent(cache -> registerRegionTemplatesForCacheRegions(applicationContext, cache));
 	}
 
 	// Required by @EnableCachingDefinedRegions
