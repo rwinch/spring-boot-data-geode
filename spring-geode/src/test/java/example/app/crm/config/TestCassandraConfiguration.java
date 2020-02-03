@@ -28,6 +28,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 import org.springframework.data.cassandra.config.CqlSessionFactoryBean;
+import org.springframework.data.cassandra.core.cql.session.init.KeyspacePopulator;
 import org.springframework.data.gemfire.tests.util.IOUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -56,11 +57,32 @@ public abstract class TestCassandraConfiguration extends AbstractCassandraConfig
 		return CLUSTER_NAME;
 	}
 
+	@Override
+	protected String getLocalDataCenter() {
+		return "datacenter1";
+	}
+
 	@NonNull @Override
 	protected String getKeyspaceName() {
 		return KEYSPACE_NAME;
 	}
 
+	@Nullable @Override
+	protected KeyspacePopulator keyspacePopulator() {
+		return cqlSession -> loadCassandraCqlScripts().forEach(cqlSession::execute);
+	}
+
+	private List<String> loadCassandraCqlScripts() {
+
+		List<String> startupScripts = new ArrayList<>(super.getStartupScripts());
+
+		startupScripts.addAll(readLines(new ClassPathResource(CASSANDRA_SCHEMA_CQL)));
+		startupScripts.addAll(readLines(new ClassPathResource(CASSANDRA_DATA_CQL)));
+
+		return startupScripts;
+	}
+
+	/*
 	@Override
 	protected List<String> getStartupScripts() {
 
@@ -71,6 +93,7 @@ public abstract class TestCassandraConfiguration extends AbstractCassandraConfig
 
 		return startupScripts;
 	}
+	*/
 
 	private List<String> readLines(Resource resource) {
 
