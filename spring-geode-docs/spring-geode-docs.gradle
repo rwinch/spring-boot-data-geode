@@ -17,6 +17,8 @@ dependencies {
 }
 
 def versions = dependencyManagement.managedVersions
+def relativePathToSpringCss = "css/spring.css"
+def resolvedPathToSpringCss = new File(project.getBuildDir(), relativePathToSpringCss).getAbsolutePath()
 
 asciidoctor {
 
@@ -24,10 +26,11 @@ asciidoctor {
 	def githubTag = snapshotBuild ? 'master' : project.version
 	def githubUrl = "$githubBaseUrl/tree/$githubTag"
 
-	attributes 'version' : project.version,
-	    'version-snapshot': snapshotBuild,
+	Map attributesMap = [
+		'version' : project.version,
 		'version-milestone': milestoneBuild,
 		'version-release': releaseBuild,
+		'version-snapshot': snapshotBuild,
 		'github-url': githubUrl,
 		'github-samples-url': "${githubUrl}/spring-geode-samples",
 		'download-url' : "${githubBaseUrl}/archive/${githubTag}.zip",
@@ -48,8 +51,64 @@ asciidoctor {
 		'examples-dir' : rootProject.projectDir.path + '/spring-geode-examples',
 		'samples-dir'  : rootProject.projectDir.path + '/spring-geode-samples',
 		'starter-logging-dir' : rootProject.projectDir.path + '/spring-geode-starter-logging',
-	    'starter-logging-src-dir' : rootProject.projectDir.path + '/spring-geode-starter-logging/src/main/src',
-	    'starter-logging-resources-dir' : rootProject.projectDir.path + '/spring-geode-starter-logging/src/main/resources'
+		'starter-logging-src-dir' : rootProject.projectDir.path + '/spring-geode-starter-logging/src/main/src',
+		'starter-logging-resources-dir' : rootProject.projectDir.path + '/spring-geode-starter-logging/src/main/resources',
+		'stylesheet' : resolvedPathToSpringCss,
+
+		// attributes from index.adoc
+		'apache-geode-version' : "{master-apache-geode-version}",
+		'apache-geode-docs' : "https://geode.apache.org/docs/guide/{apache-geode-version}",
+		'apache-geode-javadoc' : "https://geode.apache.org/releases/latest/javadoc",
+		'apache-geode-website' : "https://geode.apache.org/",
+		'pivotal-cloudcache-version' : "1-8",
+		'pivotal-cloudcache-docs' : "https://docs.pivotal.io/p-cloud-cache/{pivotal-cloudcache-version}",
+		'pivotal-cloudcache-website' : "https://pivotal.io/pivotal-cloud-cache",
+		'pivotal-cloudfoundry-version' : "2-6",
+		'pivotal-cloudfoundry-docs' : "https://docs.pivotal.io/pivotalcf/{pivotal-cloudfoundry-version}",
+		'pivotal-cloudfoundry-website' : "https://pivotal.io/platform",
+		'pivotal-gemfire-version' : "98",
+		'pivotal-gemfire-docs' : "https://gemfire.docs.pivotal.io/{pivotal-gemfire-version}/geode/reference",
+		'pivotal-gemfire-javadoc' : "https://gemfire-{pivotal-gemfire-version}-javadocs.docs.pivotal.io/",
+		'pivotal-gemfire-website' : "https://pivotal.io/pivotal-gemfire",
+		'spring-boot-docs' : "https://docs.spring.io/spring-boot/docs/current/reference",
+		'spring-boot-docs-html' : "{spring-boot-docs}/htmlsingle",
+		'spring-boot-javadoc' : "https://docs.spring.io/spring-boot/docs/current/api",
+		'spring-boot-website' : "https://spring.io/projects/spring-boot",
+		'spring-boot-data-geode-javadoc' : "https://docs.spring.io/autorepo/docs/spring-boot-data-geode-build/current/api/",
+		'spring-data-commons-docs' : "https://docs.spring.io/spring-data/commons/docs/current/reference",
+		'spring-data-commons-docs-html' : "{spring-data-commons-docs}/html",
+		'spring-data-commons-javadoc' : "https://docs.spring.io/spring-data/commons/docs/current/api",
+		'spring-data-commons-website' : "https://spring.io/projects/spring-data",
+		'spring-data-gemfire-docs' : "https://docs.spring.io/spring-data/gemfire/docs/current/reference",
+		'spring-data-gemfire-docs-html' : "{spring-data-gemfire-docs}/html",
+		'spring-data-gemfire-javadoc' : "https://docs.spring.io/spring-data/gemfire/docs/current/api",
+		'spring-data-gemfire-website' : "https://spring.io/projects/spring-data-gemfire",
+		'spring-data-geode-docs' : "https://docs.spring.io/spring-data/geode/docs/current/reference",
+		'spring-data-geode-docs-html' : "{spring-data-geode-docs}/html",
+		'spring-data-geode-javadoc' : "https://docs.spring.io/spring-data/geode/docs/current/api",
+		'spring-data-geode-website' : "https://spring.io/projects/spring-data-geode",
+		'spring-data-website' : "https://spring.io/projects/spring-data",
+		'spring-framework-docs' : "https://docs.spring.io/spring/docs/current/spring-framework-reference",
+		'spring-framework-javadoc' : "https://docs.spring.io/spring/docs/current/javadoc-api",
+		'spring-framework-website' : "https://spring.io/projects/spring-framework",
+		'spring-session-docs' : "https://docs.spring.io/spring-session/docs/current/reference/html5",
+		'spring-session-javadoc' : "https://docs.spring.io/spring-session/docs/current/api",
+		'spring-session-website' : "https://spring.io/projects/spring-session",
+		'spring-session-data-gemfire-docs' : "https://docs.spring.io/autorepo/docs/spring-session-data-geode-build/{spring-session-data-gemfire-version}/reference/html5",
+		'spring-session-data-gemfire-javadoc' : "https://docs.spring.io/autorepo/docs/spring-session-data-geode-build/{spring-session-data-gemfire-version}/api",
+		'spring-session-data-gemfire-website' : "https://spring.io/projects/spring-session-data-geode",
+		'spring-test-data-gemfire-website' : "https://github.com/spring-projects/spring-test-data-geode#spring-test-framework-for-apache-geode--pivotal-gemfire",
+		'wikipedia-docs' : "https://en.wikipedia.org/wiki"
+	]
+
+	asciidoctorj {
+		attributes attributesMap
+		setFatalWarnings { -> Collections.emptyIterator() }
+	}
+
+	asciidoctorPdf {
+		attributes attributesMap
+	}
 }
 
 javadoc {
