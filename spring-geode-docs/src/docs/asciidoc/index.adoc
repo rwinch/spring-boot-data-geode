@@ -4,7 +4,7 @@ John Blum
 :revdate: {localdate}
 :revnumber: {version}
 :doctype: book
-:toc:
+:toc: left
 :toclevels: 1
 :source-highlighter: prettify
 :numbered:

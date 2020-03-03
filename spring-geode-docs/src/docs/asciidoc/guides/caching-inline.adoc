@@ -11,6 +11,11 @@
 :spring-data-website: https://spring.io/projects/spring-data
 :spring-framework-docs: https://docs.spring.io/spring/docs/current/spring-framework-reference
 :spring-framework-javadoc: https://docs.spring.io/spring/docs/current/javadoc-api
+:toc: left
+:stylesdir: ../
+:highlightjsdir: ../js/highlight
+:docinfodir: guides
+
 
 This guide walks you through building a simple Spring Boot application
 using {spring-framework-docs}/integration.html#cache[Spring's Cache Abstraction]

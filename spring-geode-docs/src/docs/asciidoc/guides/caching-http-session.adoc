@@ -14,6 +14,11 @@
 :spring-session-docs: https://docs.spring.io/spring-session/docs/current/reference/html5
 :spring-session-javadoc: https://docs.spring.io/spring-session/docs/current/api
 :spring-session-website: https://spring.io/projects/spring-session
+:toc: left
+:stylesdir: ../
+:highlightjsdir: ../js/highlight
+:docinfodir: guides
+
 
 This guide walks you through building a simple Spring Boot application using {spring-session-website}[Spring Session]
 backed by {apache-geode-website}[Apache Geode] to manage HTTP Session state.
